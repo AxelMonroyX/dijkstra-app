@@ -1,7 +1,5 @@
 package com.axelmonroy.app;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -42,7 +40,7 @@ public class App {
                 }
             }
 
-            nodeMain.adjacencies = new Edge[]{new Edge(nodeRelationWith, weight)};
+            nodeMain.adjacency = new Edge[]{new Edge(nodeRelationWith, weight)};
 
         }
 
@@ -65,8 +63,8 @@ public class App {
         }
 
 
-        my_graph.computePaths(fromNode); // run Dijkstra
-        System.out.println("Distance to " + toNode + ": " + toNode.minDistance);
+        my_graph.calculatePaths(fromNode);
+        System.out.println("Distance to " + toNode + ": " + toNode.minimumDistance);
         List<Node> path = my_graph.getShortestPathTo(toNode);
         System.out.println("Path: " + path);
     }

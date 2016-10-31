@@ -1,38 +1,22 @@
 package com.axelmonroy.app;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+public class AppTest {
+    @Test
+    public void testApp(){
+//        Edge[] edges = {
+//                new Edge(0, 2, 1), new Edge(0, 3, 4), new Edge(0, 4, 2),
+//                new Edge(0, 1, 3), new Edge(1, 3, 2), new Edge(1, 4, 3),
+//                new Edge(1, 5, 1), new Edge(2, 4, 1), new Edge(3, 5, 4),
+//                new Edge(4, 5, 2), new Edge(4, 6, 7), new Edge(4, 7, 2),
+//                new Edge(5, 6, 4), new Edge(6, 7, 5)
+//        };
+//
+//
+//        Graph graphNodesWithEdges = new Graph(edges);
+//        graphNodesWithEdges.getShortestDistanceNodos();
+//        graphNodesWithEdges.printShortestPath();
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
     }
 }

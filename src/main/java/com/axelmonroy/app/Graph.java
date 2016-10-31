@@ -1,118 +1,80 @@
 package com.axelmonroy.app;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.PriorityQueue;
 
-public class Graph {
+public class Graph
+{
+    public static void computePaths(Node source)
+    {
+        source.minDistance = 0.;
+        PriorityQueue<Node> vertexQueue = new PriorityQueue<Node>();
+        vertexQueue.add(source);
 
-    private Nodo[] nodos;
-    private int noOfNodes;
-    private Edge[] edges;
-    private int noOfEdges;
-    private int[] predecesor;
+        while (!vertexQueue.isEmpty()) {
+            Node u = vertexQueue.poll();
 
+            // Visit each edge exiting u
+            for (Edge e : u.adjacencies)
+            {
+                Node v = e.target;
+                double weight = e.weight;
+                double distanceThroughU = u.minDistance + weight;
+                if (distanceThroughU < v.minDistance) {
+                    vertexQueue.remove(v);
 
-    public Graph(Edge[] edges) {
-        this.edges = edges;
-
-        this.noOfNodes = getNumberNodos(edges);
-        this.nodos = new Nodo[this.noOfNodes];
-
-        for (int n = 0; n < this.noOfNodes; n++) {
-            this.nodos[n] = new Nodo();
-        }
-
-        this.noOfEdges = edges.length;
-
-        for (int edgeToAdd = 0; edgeToAdd < this.noOfEdges; edgeToAdd++) {
-            this.nodos[edges[edgeToAdd].getFromNodeIndex()].getEdges().add(edges[edgeToAdd]);
-            this.nodos[edges[edgeToAdd].getToNodeIndex()].getEdges().add(edges[edgeToAdd]);
-        }
-
-    }
-
-    private int getNumberNodos(Edge[] edges) {
-        int noOfNodes = 0;
-
-        for (Edge e : edges) {
-            if (e.getToNodeIndex() > noOfNodes)
-                noOfNodes = e.getToNodeIndex();
-            if (e.getFromNodeIndex() > noOfNodes)
-                noOfNodes = e.getFromNodeIndex();
-        }
-
-        noOfNodes++;
-
-        return noOfNodes;
-    }
-
-    public void getShortestDistanceNodos() {
-        this.nodos[0].setDistanceFromSource(0);
-        int nextNode = 0;
-
-        for (int i = 0; i < this.nodos.length; i++) {
-            ArrayList<Edge> currentNodeEdges = this.nodos[nextNode].getEdges();
-
-            for (int joinedEdge = 0; joinedEdge < currentNodeEdges.size(); joinedEdge++) {
-                int neighbourIndex = currentNodeEdges.get(joinedEdge).getNeighbourIndex(nextNode);
-
-                if (!this.nodos[neighbourIndex].isVisited()) {
-                    int tentative = this.nodos[nextNode].getDistanceFromSource() + currentNodeEdges.get(joinedEdge).getLength();
-
-                    if (tentative < nodos[neighbourIndex].getDistanceFromSource()) {
-                        nodos[neighbourIndex].setDistanceFromSource(tentative);
-                    }
+                    v.minDistance = distanceThroughU ;
+                    v.previous = u;
+                    vertexQueue.add(v);
                 }
             }
-
-            nodos[nextNode].setVisited(true);
-
-            nextNode = getNodeShortestDistanced();
-
         }
     }
 
-    private int getNodeShortestDistanced() {
-        int storedNodeIndex = 0;
-        int storedDist = Integer.MAX_VALUE;
+    public static List<Node> getShortestPathTo(Node target)
+    {
+        List<Node> path = new ArrayList<Node>();
+        for (Node vertex = target; vertex != null; vertex = vertex.previous)
+            path.add(vertex);
 
-        for (int i = 0; i < this.nodos.length; i++) {
-            int currentDist = this.nodos[i].getDistanceFromSource();
-
-            if (!this.nodos[i].isVisited() && currentDist < storedDist) {
-                storedDist = currentDist;
-                storedNodeIndex = i;
-
-            }
-        }
-
-        return storedNodeIndex;
+        Collections.reverse(path);
+        return path;
     }
 
-    public void printShortestPath() {
-        String output = "Number of nodos = " + this.noOfNodes;
-        output += "\nNumber of edges = " + this.noOfEdges;
+    public static void main(String[] args)
+    {
+        // mark all the vertices
+        Node A = new Node("A");
+        Node B = new Node("B");
+        Node D = new Node("D");
+        Node F = new Node("F");
+        Node K = new Node("K");
+        Node J = new Node("J");
+        Node M = new Node("M");
+        Node O = new Node("O");
+        Node P = new Node("P");
+        Node R = new Node("R");
+        Node Z = new Node("Z");
 
-        for (int i = 0; i < this.nodos.length; i++) {
-            output += ("\nDistance from node 0 to nodo " + i + " is " + nodos[i].getDistanceFromSource());
-        }
+        // set the edges and weight
+        A.adjacencies = new Edge[]{ new Edge(M, 8) };
+        B.adjacencies = new Edge[]{ new Edge(D, 11) };
+        D.adjacencies = new Edge[]{ new Edge(B, 11) };
+        F.adjacencies = new Edge[]{ new Edge(K, 23) };
+        K.adjacencies = new Edge[]{ new Edge(O, 40) };
+        J.adjacencies = new Edge[]{ new Edge(K, 25) };
+        M.adjacencies = new Edge[]{ new Edge(R, 8) };
+        O.adjacencies = new Edge[]{ new Edge(K, 40) };
+        P.adjacencies = new Edge[]{ new Edge(Z, 18) };
+        R.adjacencies = new Edge[]{ new Edge(P, 15) };
+        Z.adjacencies = new Edge[]{ new Edge(P, 18) };
 
-        System.out.println(output);
+
+        computePaths(A); // run Dijkstra
+        System.out.println("Distance to " + Z + ": " + Z.minDistance);
+        List<Node> path = getShortestPathTo(Z);
+        System.out.println("Path: " + path);
     }
-
-    public Nodo[] getNodos() {
-        return nodos;
-    }
-
-    public int getNoOfNodes() {
-        return noOfNodes;
-    }
-
-    public Edge[] getEdges() {
-        return edges;
-    }
-
-    public int getNoOfEdges() {
-        return noOfEdges;
-    }
-
 }

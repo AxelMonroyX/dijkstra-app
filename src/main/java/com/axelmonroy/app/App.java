@@ -1,10 +1,19 @@
 package com.axelmonroy.app;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
     public static void main(String[] args) {
+        Graph my_graph = new Graph();
+        char[] alphabet = "ABCDEFGHIJLMNOPQRSTUVXYZ".toCharArray();
+        List<Node> my_nodes = new ArrayList<Node>();
+
+
         int fromNodeIndex;
         int toNodeIndex;
         int lengthToNode;
@@ -13,28 +22,53 @@ public class App {
         System.out.println("# Edges?");
         int cuantos = scan.nextInt();
 
-        Edge[] edges = new Edge[cuantos];
 
         for (int x = 0; x < cuantos; x++) {
-            System.out.println("------------ Node:"+(x+1)+" ----------");
-            System.out.println("From Node Index:");
-            fromNodeIndex = scan.nextInt();
+            Node actualNode = new Node(String.valueOf(alphabet[x]));
+            my_nodes.add(actualNode);
+        }
+        System.out.println(my_nodes.size());
 
-            System.out.println("To Node Index:");
-            toNodeIndex = scan.nextInt();
+        for (int x = 0; x < cuantos; x++) {
+            Node nodeMain = my_nodes.get(x);
+            System.out.println("------------ Node:" + alphabet[x] + " ----------");
+            String relationWith = scan.next();
+            int weight = scan.nextInt();
 
-            System.out.println("Length To Node:");
-            lengthToNode = scan.nextInt();
+            Node nodeRelationWith = null;
+            for (int i = 0; i < my_nodes.size(); i++) {
+                if (my_nodes.get(i).toString().equals(relationWith)) {
+                    nodeRelationWith = my_nodes.get(i);
+                }
+            }
 
-            edges[x] = new Edge(fromNodeIndex, toNodeIndex, lengthToNode);
-
+            nodeMain.adjacencies = new Edge[]{new Edge(nodeRelationWith, weight)};
 
         }
 
+        System.out.println("From: ");
+        String from = scan.next();
+        Node fromNode = null;
+        for (int i = 0; i < my_nodes.size(); i++) {
+            if (my_nodes.get(i).toString().equals(from)) {
+                fromNode = my_nodes.get(i);
+            }
+        }
+        System.out.println("To: ");
+        String to = scan.next();
+        Node toNode = null;
+        for (int i = 0; i < my_nodes.size(); i++) {
+            System.out.println(i);
+            if (my_nodes.get(i).toString().equals(to)) {
+                toNode = my_nodes.get(i);
+            }
+        }
 
-        Graph graphNodesWithEdges = new Graph(edges);
-        graphNodesWithEdges.getShortestDistanceNodos();
-        graphNodesWithEdges.printShortestPath();
+
+        my_graph.computePaths(fromNode); // run Dijkstra
+        System.out.println("Distance to " + toNode + ": " + toNode.minDistance);
+        List<Node> path = my_graph.getShortestPathTo(toNode);
+        System.out.println("Path: " + path);
     }
 
 }
